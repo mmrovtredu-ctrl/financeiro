@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#065F46">
+<title>Controle Financeiro · Eduardo &amp; Maitê</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="htop">
+      <div class="brand">
+        <div class="mk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
+        <div><h1>Controle Financeiro</h1><p>Eduardo &amp; Maitê · R$</p></div>
+      </div>
+      <div class="hbtns">
+        <button class="hbtn" onclick="exportData()" title="Exportar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span>Exportar</span></button>
+        <button class="hbtn" onclick="resetData()" title="Restaurar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 3v6h6"/></svg><span>Restaurar</span></button>
+      </div>
+    </div>
+    <span class="modebadge" id="modeBadge">Carregando…</span>
+    <div class="tabs">
+      <button class="tab on" data-p="geral" onclick="tab('geral')">Visão geral</button>
+      <button class="tab" data-p="mov" onclick="tab('mov')">Movimentações</button>
+      <button class="tab" data-p="maite" onclick="tab('maite')">Maitê &amp; Poupança</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- VISÃO GERAL -->
+    <section class="panel on" id="p-geral">
+      <div class="kpis">
+        <div class="kpi green"><div class="lab"><span class="dot" style="background:var(--green)"></span>Entradas</div><div class="v num" id="kEnt">R$ 0</div><div class="sub">no período</div></div>
+        <div class="kpi red"><div class="lab"><span class="dot" style="background:var(--red)"></span>Saídas</div><div class="v num" id="kSai">R$ 0</div><div class="sub">no período</div></div>
+        <div class="kpi"><div class="lab"><span class="dot" style="background:#111827"></span>Saldo</div><div class="v num" id="kSal">R$ 0</div><div class="sub">entradas − saídas</div></div>
+        <div class="kpi blue"><div class="lab"><span class="dot" style="background:var(--purple)"></span>Maitê</div><div class="v num" id="kMai">R$ 0</div><div class="sub">custeio da filha</div></div>
+      </div>
+
+      <div class="cols">
+        <div class="card">
+          <h3>Para onde vai o dinheiro</h3>
+          <p class="cap">Distribuição das saídas por categoria</p>
+          <div class="chart-box"><canvas id="catChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Diagnóstico do período</h3>
+          <p class="cap">Leitura rápida da saúde financeira</p>
+          <div class="diag">
+            <div class="row"><span>Entradas / Saídas</span><b id="dBal">—</b></div>
+            <div class="row"><span>Maior gasto</span><b id="dTop">—</b></div>
+            <div class="row"><span>% que vai p/ Maitê</span><b id="dMaite">—</b></div>
+            <div class="row"><span>Reserva de emergência</span><b style="color:var(--red)">Inexistente</b></div>
+            <div class="row"><span>Poupança da Maitê</span><b id="dPoup">—</b></div>
+          </div>
+          <div class="alert">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+            <span id="diagAlertTxt"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cols even">
+        <div class="card">
+          <h3>Entradas × Saídas</h3>
+          <p class="cap">Comparativo do período</p>
+          <div class="chart-box"><canvas id="ioChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Renda por origem</h3>
+          <p class="cap">De onde vem o dinheiro que entra</p>
+          <div class="chart-box"><canvas id="srcChart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOVIMENTAÇÕES -->
+    <section class="panel" id="p-mov">
+      <div class="card">
+        <h3>Lançar movimentação</h3>
+        <p class="cap">Registre uma entrada ou saída</p>
+        <div class="formrow">
+          <div class="fld"><label>Data</label><input type="date" id="fDate"></div>
+          <div class="fld"><label>Tipo</label><select id="fType"><option value="out">Saída</option><option value="in">Entrada</option></select></div>
+          <div class="fld"><label>Lado</label><select id="fSide"><option value="eduardo">Eduardo</option><option value="maite">Maitê</option><option value="negocio">Negócio</option><option value="proprio">Próprio</option></select></div>
+          <div class="fld full"><label>Descrição</label><input type="text" id="fDesc" placeholder="Ex.: Mercado, Pix Malu, serviço…"></div>
+          <div class="fld"><label>Valor (R$)</label><input type="number" inputmode="decimal" id="fAmount" step="0.01" placeholder="0,00"></div>
+          <button class="addbtn" onclick="addTx()">+ Adicionar</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Histórico</h3>
+        <div class="filters">
+          <select id="flType" onchange="render()"><option value="">Todos os tipos</option><option value="in">Entradas</option><option value="out">Saídas</option></select>
+          <select id="flSide" onchange="render()"><option value="">Todos os lados</option><option value="eduardo">Eduardo</option><option value="maite">Maitê</option><option value="negocio">Negócio</option><option value="proprio">Próprio</option></select>
+          <input type="text" id="flSearch" placeholder="Buscar…" oninput="render()">
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr><th>Data</th><th>Descrição</th><th>Lado</th><th style="text-align:right">Valor</th><th></th></tr></thead>
+            <tbody id="txBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAITÊ -->
+    <section class="panel" id="p-maite">
+      <div class="cols maite">
+        <div class="savecard">
+          <h3>Poupança da Maitê</h3>
+          <p class="sub">Transformar parte do que hoje some em uma reserva para a sua filha.</p>
+          <div class="saverow"><span>Acumulado</span><span class="big num" id="poupVal">R$ 0,00</span></div>
+          <div class="progress"><i id="poupBar" style="width:0%"></i></div>
+          <div class="saverow" style="font-size:12.5px;color:#C7D2FE"><span id="poupPct">0% da meta</span><span id="poupMeta">Meta: R$ 1.000,00</span></div>
+          <div class="meta-input">
+            <input type="number" inputmode="decimal" id="depAmount" step="0.01" placeholder="Valor a guardar (R$)">
+            <button onclick="addDep()">Guardar</button>
+          </div>
+          <div class="meta-input">
+            <input type="number" inputmode="decimal" id="metaAmount" step="1" placeholder="Nova meta (R$)">
+            <button onclick="setMeta()">Definir</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="miniinfo" style="margin-top:0">
+            <div class="mi"><div class="l">Enviado p/ Maitê</div><div class="n num" id="miEnviado" style="color:var(--purple)">R$ 0</div></div>
+            <div class="mi"><div class="l">Média por mês</div><div class="n num" id="miMedia">R$ 0</div></div>
+            <div class="mi"><div class="l">Custo mensal*</div><div class="n num">R$ 1.150</div></div>
+            <div class="mi"><div class="l">Sugestão poupança</div><div class="n num" style="color:var(--green)">R$ 50+/mês</div></div>
+          </div>
+          <div class="alert" style="margin-top:14px;background:var(--blue-bg);border-color:var(--blue-line);color:#1E40AF">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M12 2v6M12 22v-6M4 12H2M22 12h-2"/><circle cx="12" cy="12" r="4"/></svg>
+            <span>Guardar <b>R$ 50 por mês</b> já cria o hábito. Em 1 ano são R$ 600 — a base da primeira reserva da Maitê.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Depósitos na poupança</h3>
+        <p class="cap">Cada valor que você separa para a Maitê aparece aqui</p>
+        <div class="deposits" id="depList"></div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Gastos com a Maitê</h3>
+        <p class="cap">Transferências e custeio destinados à filha (via Maria Luiza)</p>
+        <div style="overflow-x:auto">
+          <table class="tbl"><thead><tr><th>Data</th><th>Descrição</th><th style="text-align:right">Valor</th></tr></thead><tbody id="maiteBody"></tbody></table>
+        </div>
+      </div>
+      <p class="note">* Custo mensal estimado da Maitê (mercado, transporte creche, remédios/fraldas) conforme o levantamento do casal. Valores de referência, ajustáveis.</p>
+    </section>
+
+    <p class="note">Ferramenta de organização pessoal. Não é consultoria financeira. O período 20/04–18/06/2026 já vem carregado a partir do extrato; edite, apague e adicione lançamentos à vontade.</p>
+  </div>
+</main>
+
+<!-- Supabase + Chart.js + app -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/db.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
