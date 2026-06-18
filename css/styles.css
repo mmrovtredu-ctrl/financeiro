@@ -130,3 +130,20 @@ main{padding:16px 0 56px}
   .chart-box{height:280px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== LOGIN ===== */
+.login-screen{position:fixed;inset:0;background:linear-gradient(160deg,#0B3D2E,#065F46);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100}
+.login-card{background:#fff;border-radius:20px;padding:30px 24px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.login-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#0B3D2E,#065F46);display:grid;place-items:center;margin-bottom:16px}
+.login-card h1{font-size:21px;margin-bottom:4px}
+.login-sub{font-size:14px;color:var(--muted);margin:0 0 20px}
+.login-fld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.login-fld label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.login-fld input{font-family:inherit;font-size:16px;padding:13px;border:1.5px solid var(--line);border-radius:11px;min-height:48px}
+.login-fld input:focus{outline:none;border-color:var(--green)}
+.login-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:11px;padding:14px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;min-height:50px;margin-top:4px}
+.login-btn:hover{background:#065F46}
+.login-btn.ghost{background:#fff;color:var(--green);border:1.5px solid var(--green-line);margin-top:10px}
+.login-btn.ghost:hover{background:var(--green-bg)}
+.auth-msg{font-size:13px;text-align:center;margin:12px 0 0;min-height:18px;font-weight:600}
+.login-foot{font-size:12px;color:var(--muted);text-align:center;margin:16px 0 0;line-height:1.5}
